@@ -103,11 +103,11 @@ private final static String NATIVE_UNIT_ID = "xxx";
 @Override
 protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-	mContext = this;
-	
-	Map<String, Object> property = preloadNative(NATIVE_UNIT_ID);
-	mMVMediaView = generateMediaView(mContext);
-	showNative(mContext, mMVMediaView, property);
+    mContext = this;
+
+    Map<String, Object> property = preloadNative(NATIVE_UNIT_ID);
+    mMVMediaView = generateMediaView(mContext);
+    showNative(mContext, mMVMediaView, property);
 }
 
 public Map<String, Object> preloadNative(String unitId) {
