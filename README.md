@@ -65,9 +65,9 @@ Setup SDK
 ...
 
 <activity
-	android:name="com.mobvista.msdk.reward.player.MVRewardVideoActivity"
-	android:configChanges="orientation|keyboardHidden|screenSize" 
-	android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
+    android:name="com.mobvista.msdk.reward.player.MVRewardVideoActivity"
+    android:configChanges="orientation|keyboardHidden|screenSize" 
+    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
 
 ```
 
@@ -216,14 +216,14 @@ private final static String REWARD_VIDEO_UNIT_ID = "xxx";
 @Override
 protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-	mMVRewardVideoHandler = preloadRewardVideo(this, REWARD_VIDEO_UNIT_ID);
+    mMVRewardVideoHandler = preloadRewardVideo(this, REWARD_VIDEO_UNIT_ID);
 
-	findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-		@Override
-		public void onClick(View view) {
-	    	showRewardVideo(mMVRewardVideoHandler);
-		}
-	});
+    findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            showRewardVideo(mMVRewardVideoHandler);
+        }
+    });
 }
 
 public MVRewardVideoHandler preloadRewardVideo(Activity activity, String unitId) {
