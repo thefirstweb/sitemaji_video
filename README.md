@@ -7,15 +7,15 @@ Rewarded Video / Native Ads
 	
 	|filename|
 	|---|
-	|alphab-release.aar|
-	|common-release.aar|
-	|mvjscommon-release.aar|
-	|mvnative-release.aar|
-	|nativex-release.aar|
-	|playercommon-release.aar|
-	|reward-release.aar|
-	|videocommon-release.aar|
-	|videofeeds-release.aar|
+	|mobvista_alphab.aar|
+	|mobvista_common.aar|
+	|mobvista_mvjscommon.aar|
+	|mobvista_mvnative.aar|
+	|mobvista_nativeex.aar|
+	|mobvista_playercommon.aar|
+	|mobvista_reward.aar|
+	|mobvista_videocommon.aar|
+	|mobvista_videofeeds.aar|
 	
 
 Setup SDK
@@ -36,15 +36,15 @@ Setup SDK
 	
 	...
 	
-	compile(name: 'alphab-release', ext: 'aar')
-	compile(name: 'common-release', ext: 'aar')
-	compile(name: 'mvnative-release', ext: 'aar')
-	compile(name: 'mvjscommon-release', ext: 'aar')
-	compile(name: 'nativex-release', ext: 'aar')
-	compile(name: 'playercommon-release', ext: 'aar')
-	compile(name: 'reward-release', ext: 'aar')
-	compile(name: 'videocommon-release', ext: 'aar')
-	compile(name: 'videofeeds-release', ext: 'aar')
+	compile(name: 'mobvista_alphab', ext: 'aar')
+	compile(name: 'mobvista_common', ext: 'aar')
+	compile(name: 'mobvista_mvjscommon', ext: 'aar')
+	compile(name: 'mobvista_mvjscommon', ext: 'aar')
+	compile(name: 'mobvista_nativeex', ext: 'aar')
+	compile(name: 'mobvista_playercommon', ext: 'aar')
+	compile(name: 'mobvista_reward', ext: 'aar')
+	compile(name: 'mobvista_videocommon', ext: 'aar')
+	compile(name: 'mobvista_videofeeds', ext: 'aar')
 	
 	...
 	
@@ -71,7 +71,7 @@ Setup SDK
 
 ```
 
-* Init SKD
+* Init SDK
 
 	Put the initiating codes into Android ***Application***
 
