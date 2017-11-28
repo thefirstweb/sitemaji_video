@@ -169,6 +169,13 @@ public void showNative(Context context, final MVMediaView mediaView, Map<String,
     }
     MvNativeHandler nativeHandle = new MvNativeHandler(propertiesMap, context);
     nativeHandle.setAdListener(new NativeListener.NativeAdListener() {
+
+        //native广告展示的上报的回调    
+        @Override
+        public void onLoggingImpression(int i) {
+            
+        }
+    
         @Override
         public void onAdLoaded(List<Campaign> campaigns, int template) {
             mediaView.setNativeAd(campaigns.get(0));
@@ -230,11 +237,11 @@ public MVRewardVideoHandler preloadRewardVideo(Activity activity, String unitId)
     MVRewardVideoHandler mMVRewardVideoHandler = new MVRewardVideoHandler(activity, unitId);
     mMVRewardVideoHandler.setRewardVideoListener(new RewardVideoListener() {
         @Override
-        public void onVideoLoadSuccess() {
+        public void onVideoLoadSuccess(String unitId) {
             Log.e(TAG, "onVideoLoadSuccess");
         }
         @Override
-        public void onVideoLoadFail() {
+        public void onVideoLoadFail(String unitId) {
             Log.e(TAG, "onVideoLoadFail");
         }
         @Override
