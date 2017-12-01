@@ -16,6 +16,7 @@ Rewarded Video / Native Ads
 	|mobvista_reward.aar|
 	|mobvista_videocommon.aar|
 	|mobvista_videofeeds.aar|
+	|mobvista_videojs.aar|
 	
 
 Setup SDK
@@ -45,6 +46,7 @@ Setup SDK
 	compile(name: 'mobvista_reward', ext: 'aar')
 	compile(name: 'mobvista_videocommon', ext: 'aar')
 	compile(name: 'mobvista_videofeeds', ext: 'aar')
+	compile(name: 'mobvista_videojs', ext: 'aar')
 	
 	...
 	
