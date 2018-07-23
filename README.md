@@ -1,22 +1,5 @@
 Rewarded Video / Native Ads
 --
-
-* Requirement Jar file
-
-	put all aar file to you project libs/
-	
-	|filename|
-	|---|
-	|mobvista_alphab.aar|
-	|mobvista_common.aar|
-	|mobvista_mvjscommon.aar|
-	|mobvista_mvnative.aar|
-	|mobvista_nativeex.aar|
-	|mobvista_playercommon.aar|
-	|mobvista_reward.aar|
-	|mobvista_videocommon.aar|
-	|mobvista_videofeeds.aar|
-	|mobvista_videojs.aar|
 	
 
 Setup SDK
@@ -28,64 +11,45 @@ Setup SDK
 	* app build.gradle
 
 	```
-	
 	...
-	
+		
 	repositories {
-   		flatDir { dirs 'libs' }
+   		maven { url "https://thefirstweb.github.io/repo/" }
 	}
 	
 	...
 	
-	compile(name: 'mobvista_alphab', ext: 'aar')
-	compile(name: 'mobvista_common', ext: 'aar')
-	compile(name: 'mobvista_mvjscommon', ext: 'aar')
-	compile(name: 'mobvista_mvjscommon', ext: 'aar')
-	compile(name: 'mobvista_nativeex', ext: 'aar')
-	compile(name: 'mobvista_playercommon', ext: 'aar')
-	compile(name: 'mobvista_reward', ext: 'aar')
-	compile(name: 'mobvista_videocommon', ext: 'aar')
-	compile(name: 'mobvista_videofeeds', ext: 'aar')
-	compile(name: 'mobvista_videojs', ext: 'aar')
+	
+	// Require
+	implementation "com.google.android.gms:play-services-ads:15.0.1"
+   implementation "com.sitemaji.provider:mobvista:1.1.0@aar"
 	
 	...
 	
-	
 	```
-
-
-* AndroidManifest.xml Configuration
-
-```xml
-
-...
-
-<uses-permission android:name="android.permission.INTERNET" />
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
-...
-
-<activity
-    android:name="com.mobvista.msdk.reward.player.MVRewardVideoActivity"
-    android:configChanges="orientation|keyboardHidden|screenSize" 
-    android:theme="@android:style/Theme.NoTitleBar.Fullscreen"/>
-
-```
-
+	
 * Init SDK
 
 	Put the initiating codes into Android ***Application***
 
-```java
-
-private final static String APP_ID = "";
-private final static String APP_KEY = ""
-
-MobVistaSDK sdk = MobVistaSDKFactory.getMobVistaSDK();
-Map<String,String> Map = sdk.getMVConfigurationMap(APP_ID, APP_KEY); 
-sdk.init(Map, this);
-```
+	```java
+	
+	public class App extends Application {
+	
+	    @Override
+	    public void onCreate() {
+	        super.onCreate();
+	
+	        //  init SDK
+	        MIntegralSDK sdk = MIntegralSDKFactory.getMIntegralSDK();
+	        String appId = "92762";//test ID
+	        String appKey = "936dcbdd57fe235fd7cf61c2e93da3c4";//test key
+	        Map<String, String> map = sdk.getMTGConfigurationMap(appId, appKey);
+	        sdk.init(map, this);
+	    }
+	}
+	
+	```
 
 Native-video Ads Integration
 ---
@@ -93,42 +57,76 @@ Native-video Ads Integration
 * MainActivity
 
 ```java
+private Map<String, Object> mNativeVideoMapConfig;
+private MTGMediaView mMVMediaView;
 
-...
 
-private MVMediaView mMVMediaView;
-private LinearLayout mLinearLayout;
-private Context mContext
+/* ------------------ */
 
-private final static String NATIVE_UNIT_ID = "xxx";
+findViewById(R.id.button_native_video).setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        mMVMediaView = generateMediaView(mContext);
+        showNative(mContext, mMVMediaView, mNativeVideoMapConfig);
+    }
+});
 
-@Override
-protected void onCreate(@Nullable Bundle savedInstanceState) {
+/*------------------- */
 
-    mContext = this;
 
-    Map<String, Object> property = preloadNative(NATIVE_UNIT_ID);
-    mMVMediaView = generateMediaView(mContext);
-    showNative(mContext, mMVMediaView, property);
+private void showNative(Context context, final MTGMediaView mediaView, Map<String, Object> propertiesMap) {
+    if (mediaView == null) {
+        return;
+    }
+    if (propertiesMap == null) {
+        propertiesMap = Collections.emptyMap();
+    }
+    MtgNativeHandler nativeHandle = new MtgNativeHandler(propertiesMap, context);
+    nativeHandle.setAdListener(new NativeListener.NativeAdListener() {
+        @Override
+        public void onAdLoaded(List<Campaign> campaigns, int template) {
+            mediaView.setNativeAd(campaigns.get(0));
+
+            //mLinearLayout(mMVMediaView);
+            mLinearLayout.addView(mediaView);
+        }
+
+        @Override
+        public void onAdLoadError(String message) {
+        }
+
+        @Override
+        public void onAdClick(Campaign campaign) {
+        }
+
+        @Override
+        public void onAdFramesLoaded(List<Frame> list) {
+        }
+
+        @Override
+        public void onLoggingImpression(int i) {
+        }
+    });
+    nativeHandle.load();
 }
 
-public Map<String, Object> preloadNative(String unitId) {
-    MobVistaSDK sdk = MobVistaSDKFactory.getMobVistaSDK();
-    Map<String, Object> preloadMap = new HashMap<String, Object>();
-    preloadMap.put(MobVistaConstans.PROPERTIES_LAYOUT_TYPE, MobVistaConstans.LAYOUT_NATIVE);
-    preloadMap.put(MobVistaConstans.PROPERTIES_UNIT_ID, unitId);
-    preloadMap.put(MobVistaConstans.NATIVE_VIDEO_WIDTH, 720);//the width of video ,defalt 1024
-    preloadMap.put(MobVistaConstans.NATIVE_VIDEO_HEIGHT, 480);//the heigh of video ,defalt 720
-    preloadMap.put(MobVistaConstans.NATIVE_VIDEO_SUPPORT, true);//support video
-    preloadMap.put(MobVistaConstans.PROPERTIES_AD_NUM, 1);
+private Map<String, Object> preloadNative(String unitId) {
+    MIntegralSDK sdk = MIntegralSDKFactory.getMIntegralSDK();
+    Map<String, Object> preloadMap = new HashMap<>();
+    preloadMap.put(MIntegralConstans.PROPERTIES_LAYOUT_TYPE, MIntegralConstans.LAYOUT_NATIVE);
+    preloadMap.put(MIntegralConstans.PROPERTIES_UNIT_ID, unitId);
+    preloadMap.put(MIntegralConstans.NATIVE_VIDEO_WIDTH, 720);//the width of video ,defalt 1024
+    preloadMap.put(MIntegralConstans.NATIVE_VIDEO_HEIGHT, 480);//the heigh of video ,defalt 720
+    preloadMap.put(MIntegralConstans.NATIVE_VIDEO_SUPPORT, true);//support video
+    preloadMap.put(MIntegralConstans.PROPERTIES_AD_NUM, 1);
     sdk.preload(preloadMap);
     return preloadMap;
 }
 
-public MVMediaView generateMediaView(Context context) {
-    MVMediaView mediaView = new MVMediaView(context);
+private MTGMediaView generateMediaView(Context context) {
+    MTGMediaView mediaView = new MTGMediaView(context);
     mediaView.setIsAllowFullScreen(true);
-    mediaView.setOnMediaViewListener(new OnMVMediaViewListener() {
+    mediaView.setOnMediaViewListener(new OnMTGMediaViewListener() {
         @Override
         public void onEnterFullscreen() {
             Log.e(TAG, "onEnterFullscreen");
@@ -162,46 +160,6 @@ public MVMediaView generateMediaView(Context context) {
     return mediaView;
 }
 
-public void showNative(Context context, final MVMediaView mediaView, Map<String, Object> propertiesMap) {
-    if (mediaView == null) {
-        return;
-    }
-    if (propertiesMap == null) {
-        propertiesMap = Collections.emptyMap();
-    }
-    MvNativeHandler nativeHandle = new MvNativeHandler(propertiesMap, context);
-    nativeHandle.setAdListener(new NativeListener.NativeAdListener() {
-
-        //native广告展示的上报的回调    
-        @Override
-        public void onLoggingImpression(int i) {
-            
-        }
-    
-        @Override
-        public void onAdLoaded(List<Campaign> campaigns, int template) {
-            mediaView.setNativeAd(campaigns.get(0));
-
-            //mLinearLayout(mMVMediaView);
-            mLinearLayout.addView(mediaView);
-        }
-
-        @Override
-        public void onAdLoadError(String message) {
-        }
-
-        @Override
-        public void onAdClick(Campaign campaign) {
-        }
-
-        @Override
-        public void onAdFramesLoaded(final List<Frame> list) {
-        }
-    });
-    nativeHandle.load();
-}
-
-
 ```
 
 
@@ -210,33 +168,34 @@ Rewarded video
 
 * MainActivity
 
-	you can listener onAdClose(boolean isCompleteView, String RewardName, float RewardAmout), do anything
-
 ```java
-
-...
-
-private MVRewardVideoHandler mMVRewardVideoHandler;
-private Context mContext;
-
-private final static String REWARD_VIDEO_UNIT_ID = "xxx";
+private MTGRewardVideoHandler mMVRewardVideoHandler;
 
 
-@Override
-protected void onCreate(@Nullable Bundle savedInstanceState) {
+/* ------------------ */
 
-    mMVRewardVideoHandler = preloadRewardVideo(this, REWARD_VIDEO_UNIT_ID);
+findViewById(R.id.button_video_reward).setOnClickListener(new View.OnClickListener() {
+    @Override
+    public void onClick(View v) {
+        showRewardVideo(mMVRewardVideoHandler);
+    }
+});
 
-    findViewById(R.id.button).setOnClickListener(new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            showRewardVideo(mMVRewardVideoHandler);
-        }
-    });
+/* ------------------ */
+
+private void showRewardVideo(MTGRewardVideoHandler mMVRewardVideoHandler) {
+    if (mMVRewardVideoHandler == null) {
+        return;
+    }
+    if (mMVRewardVideoHandler.isReady()) {
+        mMVRewardVideoHandler.show("rewardid");
+    }else{
+        mMVRewardVideoHandler.load();
+    }
 }
 
-public MVRewardVideoHandler preloadRewardVideo(Activity activity, String unitId) {
-    MVRewardVideoHandler mMVRewardVideoHandler = new MVRewardVideoHandler(activity, unitId);
+private MTGRewardVideoHandler preloadRewardVideo(Activity activity, String unitId) {
+    MTGRewardVideoHandler mMVRewardVideoHandler = new MTGRewardVideoHandler(activity, unitId);
     mMVRewardVideoHandler.setRewardVideoListener(new RewardVideoListener() {
         @Override
         public void onVideoLoadSuccess(String unitId) {
@@ -257,8 +216,6 @@ public MVRewardVideoHandler preloadRewardVideo(Activity activity, String unitId)
         @Override
         public void onAdClose(boolean isCompleteView, String RewardName, float RewardAmout) {
             Log.e(TAG, "reward info :" + "RewardName:" + RewardName + "RewardAmout:" + RewardAmout);
-            
-            //	do anything
         }
         @Override
         public void onVideoAdClicked(String unitId) {
@@ -268,33 +225,13 @@ public MVRewardVideoHandler preloadRewardVideo(Activity activity, String unitId)
     mMVRewardVideoHandler.load();
     return mMVRewardVideoHandler;
 }
-
-public void showRewardVideo(MVRewardVideoHandler mMVRewardVideoHandler) {
-    if (mMVRewardVideoHandler == null) {
-        return;
-    }
-    if (mMVRewardVideoHandler.isReady()) {
-        mMVRewardVideoHandler.show("rewardid");
-    }else{
-        mMVRewardVideoHandler.load();
-    }
-}
-
-
 ```
 
 * Demo
 
-![](images/device-2017-08-29-144822.png)
+![](images/device-2018-07-23-142521.png)
 
-![](images/device-2017-08-29-144834.png)
-
-![](images/device-2017-08-29-144822.png)
-
-![](images/device-2017-08-29-144904.png)
-
-![](images/device-2017-08-29-144918.png)
-
+![](images/device-2018-07-23-142452.png)
 
 Other
 ---
@@ -303,14 +240,14 @@ Other
 
 	If you need to obfuscate the application codes, you can operate as follows:
 
-```
--keepattributes Signature   
--keepattributes *Annotation*   
--keep class com.mobvista.** {*; }  
--keep interface com.mobvista.** {*; }  
--keep class android.support.v4.** { *; }  
--dontwarn com.mobvista.**   
--keep class **.R$* { public static final int mobvista*; }
--keep class com.alphab.** {*; }
--keep interface com.alphab.** {*; }
-```
+	```
+	-keepattributes Signature   
+	-keepattributes *Annotation*   
+	-keep class com.mintegral.** {*; }  
+	-keep interface com.mintegral.** {*; }  
+	-keep class android.support.v4.** { *; }  
+	-dontwarn com.mintegral.**   
+	-keep class **.R$* { public static final int mintegral*; }
+	-keep class com.alphab.** {*; }
+	-keep interface com.alphab.** {*; }
+	```
