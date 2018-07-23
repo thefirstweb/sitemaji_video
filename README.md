@@ -13,16 +13,15 @@ Setup SDK
 	```
 	...
 		
-	repositories {
-   		maven { url "https://thefirstweb.github.io/repo/" }
-	}
+    repositories {
+        maven { url "https://thefirstweb.github.io/repo/" }
+    }
 	
 	...
 	
-	
-	// Require
-	implementation "com.google.android.gms:play-services-ads:15.0.1"
-   implementation "com.sitemaji.provider:mobvista:1.1.0@aar"
+    // Require
+    implementation "com.google.android.gms:play-services-ads:15.0.1"
+    implementation "com.sitemaji.provider:mobvista:1.1.0@aar"
 	
 	...
 	
